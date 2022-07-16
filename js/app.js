@@ -21,7 +21,7 @@ const movingBlock = {
     type: "tShape",
     direction:0,
     top:0,
-    left:0
+    left:3,
 }
 
 init()
@@ -60,9 +60,9 @@ function renderBlocks() {
     //iterate the block's type and coordinates 
     blocks[type][direction].forEach(block => {
         //first element in the array
-        const x = block[0]
+        const x = block[0] + left
         //second element in the array
-        const y = block[1]
+        const y = block[1] + top
         
         //Create the target inside the gameBoard object using coordinates(childnodes)
         // console.log({gameBoard}) 
