@@ -13,6 +13,17 @@ const blocks = {
     ]
 }
 
+//block's initial value before moving
+let initialBlock;
+
+//actual value of block(type, coordinate)
+const movingBlock = {
+    type:square,
+    direction:0,
+    top:0,
+    left:0
+}
+
 function createBoard () {
     for (let i=0; i<gameRows; i++) {
         const rows = document.createElement('li')
