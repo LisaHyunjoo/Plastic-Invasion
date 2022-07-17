@@ -7,9 +7,9 @@ const blocks = {
             //change the block's shape in 4 ways with arrow keys
     tShape: [ //represent coordinates (values of x & y)
         [[0,1], [1,0], [1,1], [2,1]], 
-        [[], [], [], []],
-        [[], [], [], []],
-        [[], [], [], []],
+        [],
+        [],
+        [],
     ]
 }
 
@@ -17,7 +17,7 @@ const blocks = {
 let initialBlock;
 
 //actual value of block(type, coordinate)
-const movingBlock = {
+let movingBlock = {
     type: "tShape",
     direction:0,
     top:0,
@@ -29,12 +29,13 @@ init()
 function init() {
     //Separate the initial value of block from the value of moving block
     initialBlock = {...movingBlock}
-    movingBlock.left=3
+    // movingBlock.left=3
     // console.log(initialBlock)
     // console.log(movingBlock)
 
     createBoard()
     renderBlocks()
+    
 }
 
 function createBoard () {
@@ -68,24 +69,33 @@ function renderBlocks() {
         //Create the target inside the gameBoard object using coordinates(childnodes)
         // console.log({gameBoard}) 
         const target = gameBoard.childNodes[y].childNodes[0].childNodes[x]
-        console.log(target)
+        // console.log(target)
         //add a class to target
         target.classList.add(type)
+        // console.log(target)
     })  
 }
 
+
+function moveBlock(moveType, amount) {
+    initialBlock[moveType] += amount
+    renderBlocks()
+}
+
+
+
 document.addEventListener('keydown', e => {
-    switch(e.keycode){
+    switch(e.keyCode){
         //right arrow key -- add space 1 to left
         case 39:
             moveBlock("left",1);
             break;
         //left arrow key -- remove space 1 to left
         case 37:
-            moveBlock('left', -1);
+            moveBlock("left", -1);
             break;
         default:
             break;
     }
-    // console.log(e)
+    console.log(e)
 })

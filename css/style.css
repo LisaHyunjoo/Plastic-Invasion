@@ -19,7 +19,7 @@ ul {
 .game-board > ul {
     /* background-color: lightcyan; */
     width: 250px;
-    border: 1px dotted gray;
+    border: 1px solid gray;
     margin: 0 auto;
    
 }
