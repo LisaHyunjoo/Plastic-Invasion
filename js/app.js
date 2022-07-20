@@ -24,12 +24,12 @@ class Block {
 }
 
 //Define a initial value of block
-const initialBlock = new Block
-// console.log(initialBlock)
+let initialBlock = new Block
+console.log(initialBlock)
 //Define a value of moving block
-const movingBlock = new Block
+let movingBlock = new Block
 // movingBlock.left=3
-// console.log(movingBlock)
+console.log(movingBlock)
 
 
 init()
@@ -62,9 +62,9 @@ function renderBlocks() {
     console.log(initialType, initialDirection, initialTop, initialLeft )
 
     //remove the unmoved blocks
-    const movingBlocks = document.querySelectorAll(".moving")
+    const removeBlocks = document.querySelectorAll(".moving")
     // console.log(movingBlocks)
-    movingBlocks.forEach(moving => {
+    removeBlocks.forEach(moving => {
         moving.classList.remove(initialType,'moving')
     console.log(moving)
     })
@@ -81,16 +81,36 @@ function renderBlocks() {
 
     //Create the target inside the gameBoard object using coordinates(childnodes)to add the class of type
     // console.log({gameBoard}) 
-    const target = gameBoard.childNodes[y].childNodes[0].childNodes[x]
+    // const target = gameBoard.childNodes[y].childNodes[0].childNodes[x]
     // console.log(target)
-    //add a class to target
-    //give a class to remove unmoved block
-    target.classList.add(initialType, "moving")
-    // console.log(target)
+    
+    //keep the block inside the gameboard using Conditional (ternary) operator
+    const target = gameBoard.childNodes[y]?  gameBoard.childNodes[y].childNodes[0].childNodes[x] : null;
+    
+    //create a function to check gameBoard.childNodes[y].childNodes[0].childNodes[x] has a correct value
+    const isAvailable = checkEmpty(target)
+    //If there's a value of target
+    if(isAvailable) {
+        //add a class to target
+        //give a class to remove unmoved block
+        target.classList.add(initialType, "moving")
+        // console.log(target)
+    //if not, initialize the value
+    } else {
+        initialBlock = {...movingBlock}
+        renderBlocks()
+    } 
+ 
 })  
+
 }
-
-
+//check if there's a target
+function checkEmpty(target){
+    if(!target) {
+        return false
+    }
+    return true
+}
 
 // Define a moveBlock function having parameter to move left or right
 function moveBlock(move, amount) {
