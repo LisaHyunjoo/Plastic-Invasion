@@ -3,36 +3,38 @@ const gameBoard = document.querySelector(".game-board > ul")
 const gameRows = 20;
 const gameCols = 10;
 
-const blocks = {
+const shapes = {
             //change the block's shape in 4 ways with arrow keys
     tShape: [ //represent coordinates (values of x & y)
-        [[0,1], [1,0], [1,1], [2,1]], 
+        [[2,1], [0,1], [1,0], [1,1]], 
         [],
         [],
         [],
     ]
 }
 
-//block's initial value before moving
-let initialBlock;
-
-//actual value of block(type, coordinate)
-let movingBlock = {
-    type: "tShape",
-    direction:0,
-    top:0,
-    left:3,
+//Create the class of Block
+class Block {
+    constructor(type, direction, top, left) {
+        this.type = 'tShape'
+        this.direction = 0
+        this.top = 0
+        this.left = 3
+    }
 }
+
+//Define a initial value of block
+const initialBlock = new Block
+console.log(initialBlock)
+//Define a value of moving block
+const movingBlock = new Block
+movingBlock.left=3
+console.log(movingBlock)
+
 
 init()
 
 function init() {
-    //Separate the initial value of block from the value of moving block
-    initialBlock = {...movingBlock}
-    // movingBlock.left=3
-    // console.log(initialBlock)
-    // console.log(movingBlock)
-
     createBoard()
     renderBlocks()
     
@@ -52,38 +54,51 @@ function createBoard () {
 }
 
 function renderBlocks() {
-    //take the initial value of a block
-    const {type, direction, top, left} = initialBlock;
-    // console.log(type, direction, top, left )
-
-    //take a block's type and coordinates of direction
-    // console.log(blocks[type][direction])
+    // take the value of initial block
+        initialType =  initialBlock.type;
+        initialDirection = initialBlock.direction
+        initialTop = initialBlock.top
+        initialLeft =  initialBlock.left
+    
+        console.log(initialType, initialDirection, initialTop, initialLeft )
+        
+    // take a block's type and coordinates of direction
+        console.log(shapes[initialType][initialDirection])
 
     //iterate the block's type and coordinates 
-    blocks[type][direction].forEach(block => {
-        //first element in the array, move the block by the value of left/top
-        const x = block[0] + left
-        //second element in the array
-        const y = block[1] + top
-        
-        //Create the target inside the gameBoard object using coordinates(childnodes)
-        // console.log({gameBoard}) 
+        shapes[initialType][initialDirection].forEach(block => {
+    //first element in the array(=column), move the block by the value of left/top
+        const x = block[0] + initialLeft
+    //second element in the array(row)
+        const y = block[1] + initialTop
+
+    //Create the target inside the gameBoard object using coordinates(childnodes)to add the class of type
+    // console.log({gameBoard}) 
         const target = gameBoard.childNodes[y].childNodes[0].childNodes[x]
-        // console.log(target)
-        //add a class to target
-        target.classList.add(type)
-        // console.log(target)
-    })  
+    // console.log(target)
+    //add a class to target
+    //give a class 'remove' to remove unmoved block
+        target.classList.add(initialType, "moving")
+    // console.log(target)
+    const movingBlocks = document.querySelectorAll(".moving")
+    movingBlocks.forEach(moving => {
+    movingBlocks.classList.remove(type,'moving')
+    console.log(moving)
+ })
+
+})  
 }
 
 
-function moveBlock(moveType, amount) {
-    initialBlock[moveType] += amount
+
+// Define a moveBlock function having parameter to move left or right
+function moveBlock(move, amount) {
+    initialBlock[move] += amount
     renderBlocks()
 }
 
 
-
+//event handling for  key control 
 document.addEventListener('keydown', e => {
     switch(e.keyCode){
         //right arrow key -- add space 1 to left
