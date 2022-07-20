@@ -25,11 +25,11 @@ class Block {
 
 //Define a initial value of block
 const initialBlock = new Block
-console.log(initialBlock)
+// console.log(initialBlock)
 //Define a value of moving block
 const movingBlock = new Block
-movingBlock.left=3
-console.log(movingBlock)
+// movingBlock.left=3
+// console.log(movingBlock)
 
 
 init()
@@ -37,7 +37,6 @@ init()
 function init() {
     createBoard()
     renderBlocks()
-    
 }
 
 function createBoard () {
@@ -55,37 +54,39 @@ function createBoard () {
 
 function renderBlocks() {
     // take the value of initial block
-        initialType =  initialBlock.type;
-        initialDirection = initialBlock.direction
-        initialTop = initialBlock.top
-        initialLeft =  initialBlock.left
+    initialType =  initialBlock.type;
+    initialDirection = initialBlock.direction
+    initialTop = initialBlock.top
+    initialLeft =  initialBlock.left
     
-        console.log(initialType, initialDirection, initialTop, initialLeft )
+    console.log(initialType, initialDirection, initialTop, initialLeft )
+
+    //remove the unmoved blocks
+    const movingBlocks = document.querySelectorAll(".moving")
+    // console.log(movingBlocks)
+    movingBlocks.forEach(moving => {
+        moving.classList.remove(initialType,'moving')
+    console.log(moving)
+    })
         
     // take a block's type and coordinates of direction
-        console.log(shapes[initialType][initialDirection])
+    // console.log(shapes[initialType][initialDirection])
 
     //iterate the block's type and coordinates 
-        shapes[initialType][initialDirection].forEach(block => {
+    shapes[initialType][initialDirection].forEach(block => {
     //first element in the array(=column), move the block by the value of left/top
-        const x = block[0] + initialLeft
+    const x = block[0] + initialLeft
     //second element in the array(row)
-        const y = block[1] + initialTop
+    const y = block[1] + initialTop
 
     //Create the target inside the gameBoard object using coordinates(childnodes)to add the class of type
     // console.log({gameBoard}) 
-        const target = gameBoard.childNodes[y].childNodes[0].childNodes[x]
+    const target = gameBoard.childNodes[y].childNodes[0].childNodes[x]
     // console.log(target)
     //add a class to target
-    //give a class 'remove' to remove unmoved block
-        target.classList.add(initialType, "moving")
+    //give a class to remove unmoved block
+    target.classList.add(initialType, "moving")
     // console.log(target)
-    const movingBlocks = document.querySelectorAll(".moving")
-    movingBlocks.forEach(moving => {
-    movingBlocks.classList.remove(type,'moving')
-    console.log(moving)
- })
-
 })  
 }
 
@@ -109,8 +110,12 @@ document.addEventListener('keydown', e => {
         case 37:
             moveBlock("left", -1);
             break;
+        //down arra key == add space 1 to top
+        case 40:
+            moveBlock("top", 1);
+            break;
         default:
             break;
     }
-    console.log(e)
+    // console.log(e)
 })
