@@ -4,37 +4,35 @@ const gameRows = 20;
 const gameCols = 10;
 
 const shapes = {
-            //change the block's shape in 4 ways with arrow keys
-    tShape: [ //represent coordinates (values of x & y)
-        [[2,1], [0,1], [1,0], [1,1]], 
-        [],
-        [],
-        [],
-    ]
-}
-
-//Create the class of Block
-class Block {
-    constructor(type, direction, top, left) {
-        this.type = 'tShape'
-        this.direction = 0
-        this.top = 0
-        this.left = 3
-    }
+    //change the block's shape in 4 ways with arrow keys
+    //represent coordinates (values of x & y)
+            tShape: [ 
+                [[1,0], [0,1], [1,1], [2,1]],
+                [[1,0], [0,1], [1,1], [1,2]], 
+                [[2,1], [0,1], [1,1], [1,2]],
+                [[2,1], [1,2], [1,1], [1,0]]
+                ]
+    
 }
 
 //Define a initial value of block
-let initialBlock = new Block
-console.log(initialBlock)
-//Define a value of moving block
-let movingBlock = new Block
-// movingBlock.left=3
-console.log(movingBlock)
+let initialBlock 
 
+// Create an object of movingBlock
+const movingBlock =  {
+        type :'tShape',
+        direction : 0, //change the shapes with arrow keys
+        top : 0, // up and down
+        left : 3 //left and right
+}
 
 init()
 
 function init() {
+    initialBlock = {...movingBlock} //if the value of initial Block is not correct, return to the value of moving Block.
+    // console.log('initialBlock', initialBlock)
+    // movingBlock.left=3
+    // console.log('movingBlock', movingBlock)
     createBoard()
     renderBlocks()
 }
@@ -45,77 +43,98 @@ function createBoard () {
         const cols = document.createElement('ul')
         for (let j=0; j<gameCols; j++) {
             const cube = document.createElement('li')
-            cols.appendChild(cube)
+            cols.prepend(cube)
         }
-        rows.appendChild(cols)
-        gameBoard.appendChild(rows)
+        rows.prepend(cols)
+        gameBoard.prepend(rows)
     }
 }
 
-function renderBlocks() {
-    // take the value of initial block
-    initialType =  initialBlock.type;
-    initialDirection = initialBlock.direction
-    initialTop = initialBlock.top
-    initialLeft =  initialBlock.left
-    
-    console.log(initialType, initialDirection, initialTop, initialLeft )
+function renderBlocks(moveDirection="") {
+    // take the value of initial block from moving block using const destructuring assignment
+    const {type, direction, top, left} = initialBlock;
+    // console.log('initial Block',initialBlock )
 
     //remove the unmoved blocks
     const removeBlocks = document.querySelectorAll(".moving")
     // console.log(movingBlocks)
     removeBlocks.forEach(moving => {
-        moving.classList.remove(initialType,'moving')
-    console.log(moving)
+        moving.classList.remove(type,'moving')
+        // console.log('moving',moving)
     })
         
     // take a block's type and coordinates of direction
     // console.log(shapes[initialType][initialDirection])
 
-    //iterate the block's type and coordinates 
-    shapes[initialType][initialDirection].forEach(block => {
-    //first element in the array(=column), move the block by the value of left/top
-    const x = block[0] + initialLeft
-    //second element in the array(row)
-    const y = block[1] + initialTop
+    //Access to shapes array to find the block's shapes & coordinate's of direction, and iterate it.
+    //forEach => .some()
+    // console.log('coordinates',shapes[type][direction])
+    shapes[type][direction].forEach(shape => {
+        //Create the target inside the gameBoard object using coordinates(childnodes)to add the class of type
+        // console.log('gameboard',{gameBoard}) 
 
-    //Create the target inside the gameBoard object using coordinates(childnodes)to add the class of type
-    // console.log({gameBoard}) 
-    // const target = gameBoard.childNodes[y].childNodes[0].childNodes[x]
-    // console.log(target)
+        //first element in the array(=column), move the block by the value of left/top from moving block,
+        const x = shape[0] + left 
+        //second element in the array(row)
+        const y = shape[1] + top 
+
+        // const target = gameBoard.childNodes[y].childNodes[0].childNodes[x]
+        // console.log('target', target)
+
+        // keep the block inside the gameboard using Conditional (ternary) operator
+        // if there is a value of row(y), take the value of (x,y)
+        const target = gameBoard.childNodes[y]?  gameBoard.childNodes[y].childNodes[0].childNodes[x] : null;
+        console.log('target',target)
     
-    //keep the block inside the gameboard using Conditional (ternary) operator
-    const target = gameBoard.childNodes[y]?  gameBoard.childNodes[y].childNodes[0].childNodes[x] : null;
-    
-    //create a function to check gameBoard.childNodes[y].childNodes[0].childNodes[x] has a correct value
-    const isAvailable = checkEmpty(target)
-    //If there's a value of target
-    if(isAvailable) {
-        //add a class to target
-        //give a class to remove unmoved block
-        target.classList.add(initialType, "moving")
-        // console.log(target)
-    //if not, initialize the value
-    } else {
-        initialBlock = {...movingBlock}
-        renderBlocks()
-    } 
- 
+        //create a function to check gameBoard.childNodes[y].childNodes[0].childNodes[x] has a correct value
+        const isAvailable = checkEmpty(target)
+        //If there's a value of target
+        if(isAvailable) {
+            //add a class 'type' to target
+            //give a class 'moving' to remove unmoved block
+            target.classList.add(type, "moving")
+            // console.log(target)
+        //if not, initialize the value
+        } else {
+            initialBlock = {...movingBlock}
+            // console.log('inside render initial', initialBlock)
+            // console.log('inside render moving', movingBlock)
+        //to prevent the maximum call stack size, put the renderBlock() inside the setTimeout() in renderblock() => repeat!
+            setTimeout(()=> {
+                renderBlocks() //Maximum call stack size exceeded
+                // if there's no target when the move direction is top, freezeblock.
+                if(moveDirection ==="top") {
+                    freezeBlock()
+                }
+            }, 0)
+        } 
 })  
-
+movingBlock.left = left
+movingBlock.top = top
+movingBlock.direction = direction
 }
-//check if there's a target
+
+//check if there's a target to prevent the blocks pass over the edge of game board && if there's another block at the bottom
 function checkEmpty(target){
-    if(!target) {
+    if(!target || target.classList.contains("freezed")) {
         return false
     }
     return true
 }
 
 // Define a moveBlock function having parameter to move left or right
-function moveBlock(move, amount) {
-    initialBlock[move] += amount
-    renderBlocks()
+function moveBlock(moveDirection, amount) {
+    initialBlock[moveDirection] += amount
+    renderBlocks(moveDirection)
+}
+
+// To freeze the block, remove the moving class, add the freezed class
+function freezeBlock() {
+    const removeBlocks = document.querySelectorAll(".moving")
+    removeBlocks.forEach(moving => {
+       moving.classList.remove('moving')
+       moving.classList.add('freezed')
+    })
 }
 
 
@@ -133,6 +152,9 @@ document.addEventListener('keydown', e => {
         //down arra key == add space 1 to top
         case 40:
             moveBlock("top", 1);
+            break;
+        case 38:
+            changeDirection();
             break;
         default:
             break;
