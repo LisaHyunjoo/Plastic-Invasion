@@ -45,3 +45,27 @@ ul {
 .tShape {
     background-color: #5eb234;
 }
+
+.tShape {
+    background: rgb(136, 136, 198);
+}
+
+.iShappe {
+    background: salmon;
+}
+
+.zShape {
+    background: #e6a23c;
+}
+
+.leftLShape {
+    background: #8e44ad;
+}
+
+.rightLShape {
+    background: #16a085;
+}
+
+.square {
+    background: lightskyblue;
+}

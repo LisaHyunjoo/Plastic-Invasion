@@ -69,7 +69,7 @@ function renderBlocks(moveDirection="") {
     //Access to shapes array to find the block's shapes & coordinate's of direction, and iterate it.
     //forEach => .some()
     // console.log('coordinates',shapes[type][direction])
-    shapes[type][direction].forEach(shape => {
+    shapes[type][direction].some(shape => {
         //Create the target inside the gameBoard object using coordinates(childnodes)to add the class of type
         // console.log('gameboard',{gameBoard}) 
 
@@ -107,6 +107,8 @@ function renderBlocks(moveDirection="") {
                     freezeBlock()
                 }
             }, 0)
+            // use .some(), if one li of shape's == !target, last 3 does not move $$ return to renderBlock
+            return true
         } 
 })  
 movingBlock.left = left
@@ -136,6 +138,16 @@ function freezeBlock() {
        moving.classList.add('freezed')
     })
 }
+
+// change the direction 
+function changeDirection(){
+    initialBlock.direction += 1
+    if(initialBlock.direction === 4) {
+        initialBlock.direction =0
+    }
+    renderBlocks()
+}
+
 
 
 //event handling for  key control 
