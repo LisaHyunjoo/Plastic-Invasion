@@ -137,6 +137,8 @@ function freezeBlock() {
        moving.classList.remove('moving')
        moving.classList.add('freezed')
     })
+
+    generateNewBlock()
 }
 
 // change the direction 
@@ -149,6 +151,13 @@ function changeDirection(){
 }
 
 
+function generateNewBlock() {
+    movingBlock.left = 3
+    movingBlock.top = 0
+    movingBlock.direction = 0
+    initialBlock = {...movingBlock}
+    renderBlocks()
+}
 
 //event handling for  key control 
 document.addEventListener('keydown', e => {
