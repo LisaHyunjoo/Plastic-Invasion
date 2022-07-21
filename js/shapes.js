@@ -42,3 +42,5 @@ const shapes = {
     [[0,1], [1,1], [2,1], [2,2]]
     ]
 }
+
+export default shapes

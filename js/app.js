@@ -1,19 +1,21 @@
+import shapes from "./shapes.js";
+
 const gameBoard = document.querySelector(".game-board > ul")
 
 const gameRows = 20;
 const gameCols = 10;
 
-const shapes = {
-    //change the block's shape in 4 ways with arrow keys
-    //represent coordinates (values of x & y)
-            tShape: [ 
-                [[1,0], [0,1], [1,1], [2,1]],
-                [[1,0], [0,1], [1,1], [1,2]], 
-                [[2,1], [0,1], [1,1], [1,2]],
-                [[2,1], [1,2], [1,1], [1,0]]
-                ]
+// const shapes = {
+//     //change the block's shape in 4 ways with arrow keys
+//     //represent coordinates (values of x & y)
+//             tShape: [ 
+//                 [[1,0], [0,1], [1,1], [2,1]],
+//                 [[1,0], [0,1], [1,1], [1,2]], 
+//                 [[2,1], [0,1], [1,1], [1,2]],
+//                 [[2,1], [1,2], [1,1], [1,0]]
+//                 ]
     
-}
+// }
 
 //Define a initial value of block
 let initialBlock 
@@ -33,8 +35,10 @@ function init() {
     // console.log('initialBlock', initialBlock)
     // movingBlock.left=3
     // console.log('movingBlock', movingBlock)
+    
     createBoard()
     renderBlocks()
+
 }
 
 function createBoard () {
@@ -137,7 +141,6 @@ function freezeBlock() {
        moving.classList.remove('moving')
        moving.classList.add('freezed')
     })
-
     generateNewBlock()
 }
 
@@ -150,15 +153,23 @@ function changeDirection(){
     renderBlocks()
 }
 
-
+// make a new block when a block is freezed at the bottom
 function generateNewBlock() {
+    //create a random block type
+    // the key&value pair of object 'shapes' => array
+    // console.log(Object.entries(shapes))
+    const shapesArr= Object.entries(shapes)
+    const randomShapes = Math.floor(Math.random()*shapesArr.length)
+    // console.log(shapesArr[randomShapes])
+
+    movingBlock.type = shapesArr[randomShapes][0]
     movingBlock.left = 3
     movingBlock.top = 0
     movingBlock.direction = 0
     initialBlock = {...movingBlock}
     renderBlocks()
 }
-
+generateNewBlock()
 //event handling for  key control 
 document.addEventListener('keydown', e => {
     switch(e.keyCode){
