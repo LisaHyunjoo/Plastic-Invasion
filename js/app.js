@@ -5,24 +5,15 @@ const gameBoard = document.querySelector(".game-board > ul")
 const gameRows = 20;
 const gameCols = 10;
 
-// const shapes = {
-//     //change the block's shape in 4 ways with arrow keys
-//     //represent coordinates (values of x & y)
-//             tShape: [ 
-//                 [[1,0], [0,1], [1,1], [2,1]],
-//                 [[1,0], [0,1], [1,1], [1,2]], 
-//                 [[2,1], [0,1], [1,1], [1,2]],
-//                 [[2,1], [1,2], [1,1], [1,0]]
-//                 ]
-    
-// }
 
 //Define a initial value of block
 let initialBlock 
+let duration = 500;
+let moveDownInterval;
 
 // Create an object of movingBlock
 const movingBlock =  {
-        type :'tShape',
+        type :'',
         direction : 0, //change the shapes with arrow keys
         top : 0, // up and down
         left : 3 //left and right
@@ -36,22 +27,24 @@ function init() {
     // movingBlock.left=3
     // console.log('movingBlock', movingBlock)
     
-    createBoard()
-    renderBlocks()
+    for (let i=0; i<gameRows; i++) {
+        appendNewLine()
+    }
+    // renderBlocks()
+    generateNewBlock()
 
 }
 
-function createBoard () {
-    for (let i=0; i<gameRows; i++) {
-        const rows = document.createElement('li')
-        const cols = document.createElement('ul')
-        for (let j=0; j<gameCols; j++) {
-            const cube = document.createElement('li')
-            cols.prepend(cube)
-        }
-        rows.prepend(cols)
-        gameBoard.prepend(rows)
+function appendNewLine() {
+    const rows = document.createElement('li')
+    const cols = document.createElement('ul')
+    for (let j=0; j<gameCols; j++) {
+        const cube = document.createElement('li')
+        cols.prepend(cube)
     }
+    rows.prepend(cols)
+    gameBoard.prepend(rows)
+
 }
 
 function renderBlocks(moveDirection="") {
@@ -88,7 +81,7 @@ function renderBlocks(moveDirection="") {
         // keep the block inside the gameboard using Conditional (ternary) operator
         // if there is a value of row(y), take the value of (x,y)
         const target = gameBoard.childNodes[y]?  gameBoard.childNodes[y].childNodes[0].childNodes[x] : null;
-        console.log('target',target)
+        // console.log('target',target)
     
         //create a function to check gameBoard.childNodes[y].childNodes[0].childNodes[x] has a correct value
         const isAvailable = checkEmpty(target)
@@ -114,10 +107,10 @@ function renderBlocks(moveDirection="") {
             // use .some(), if one li of shape's == !target, last 3 does not move $$ return to renderBlock
             return true
         } 
-})  
-movingBlock.left = left
-movingBlock.top = top
-movingBlock.direction = direction
+    })  
+    movingBlock.left = left
+    movingBlock.top = top
+    movingBlock.direction = direction
 }
 
 //check if there's a target to prevent the blocks pass over the edge of game board && if there's another block at the bottom
@@ -141,7 +134,30 @@ function freezeBlock() {
        moving.classList.remove('moving')
        moving.classList.add('freezed')
     })
+    removeMatchedLine() 
+    // generateNewBlock()
+}
+
+function removeMatchedLine(){
+    const childNodes = gameBoard.childNodes
+   
+    childNodes.forEach(child => {
+       console.log({child})
+        let matched = true
+        child.children[0].childNodes.forEach(li=> {
+            if(!li.classList.contains("freezed")) {
+            matched = false
+             }
+        })
+        if(matched) {
+            child.remove()
+            appendNewLine()
+            // score += 10;
+            // gameScore.innerText = score;
+        }
+    })
     generateNewBlock()
+
 }
 
 // change the direction 
@@ -155,6 +171,11 @@ function changeDirection(){
 
 // make a new block when a block is freezed at the bottom
 function generateNewBlock() {
+    // move blokcs down
+    clearInterval(moveDownInterval)
+    moveDownInterval = setInterval(()=>{
+        moveBlock('top',1)
+    }, duration)
     //create a random block type
     // the key&value pair of object 'shapes' => array
     // console.log(Object.entries(shapes))
@@ -163,13 +184,21 @@ function generateNewBlock() {
     // console.log(shapesArr[randomShapes])
 
     movingBlock.type = shapesArr[randomShapes][0]
-    movingBlock.left = 3
+    movingBlock.left = 3 
     movingBlock.top = 0
     movingBlock.direction = 0
     initialBlock = {...movingBlock}
     renderBlocks()
 }
-generateNewBlock()
+
+// control the falling rate of block with spacebar keye
+function dropBlock(){
+    clearInterval(moveDownInterval)
+    moveDownInterval = setInterval(()=>{
+        moveBlock("top",1)
+    }, 10)
+}
+
 //event handling for  key control 
 document.addEventListener('keydown', e => {
     switch(e.keyCode){
@@ -187,6 +216,9 @@ document.addEventListener('keydown', e => {
             break;
         case 38:
             changeDirection();
+            break;
+        case 32:
+            dropBlock();
             break;
         default:
             break;
