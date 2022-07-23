@@ -4,18 +4,17 @@ const bgImage = document.querySelector('.bg-image')
 bgImage.style.backgroundImage = "url('images/plastic-pollution.png')";
 const gameBoard = document.querySelector(".game-board > ul")
 const stopGame = document.querySelector(".game-over")
-const startBtn = document.querySelector(".game-start > button")
+// const startBtn = document.querySelector(".game-start > button")
 const restartBtn = document.querySelector(".game-over  > button")
-
-const gameRows = 20;
-const gameCols = 10;
-
-
+const gameScore = document.querySelector('#game-score')
 
 //Define a initial value of block
+const gameRows = 20;
+const gameCols = 10;
 let initialBlock 
 let duration = 500;
 let moveDownInterval;
+let score = 100;
 
 // Create an object of movingBlock
 const movingBlock =  {
@@ -164,6 +163,8 @@ function removeMatchedLine(){
         if(matched) {
             child.remove()
             appendNewLine()
+            score += 10;
+            gameScore.innerText = score;
         }
     })
     generateNewBlock()
@@ -244,7 +245,7 @@ document.addEventListener('keydown', e => {
 })
 
 
-// startBtn.addEventListener('clicked', generateNewBlock())
+//  
 
 // if restart is clicked, game restarts
 restartBtn.addEventListener("click", ()=> {
