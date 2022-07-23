@@ -1,9 +1,15 @@
 import shapes from "./shapes.js";
 
+const bgImage = document.querySelector('.bg-image')
+bgImage.style.backgroundImage = "url('images/plastic-pollution.png')";
 const gameBoard = document.querySelector(".game-board > ul")
+const stopGame = document.querySelector(".game-over")
+const startBtn = document.querySelector(".game-start > button")
+const restartBtn = document.querySelector(".game-over  > button")
 
 const gameRows = 20;
 const gameCols = 10;
+
 
 
 //Define a initial value of block
@@ -96,10 +102,16 @@ function renderBlocks(moveDirection="") {
             initialBlock = {...movingBlock}
             // console.log('inside render initial', initialBlock)
             // console.log('inside render moving', movingBlock)
+        // if rederBlock's parameter is 'retry', set game over
+            if(moveDirection === 'retry') {
+                clearInterval(moveDownInterval)
+                gameOver()
+            }
         //to prevent the maximum call stack size, put the renderBlock() inside the setTimeout() in renderblock() => repeat!
             setTimeout(()=> {
-                renderBlocks() //Maximum call stack size exceeded
-                // if there's no target when the move direction is top, freezeblock.
+                // if all render block is freedzed, renderBlock <=> top : give a parameter retry
+                renderBlocks('retry') //Maximum call stack size exceeded
+                // if there's no target when the moveDirection is top, freezeblock.
                 if(moveDirection ==="top") {
                     freezeBlock()
                 }
@@ -152,8 +164,6 @@ function removeMatchedLine(){
         if(matched) {
             child.remove()
             appendNewLine()
-            // score += 10;
-            // gameScore.innerText = score;
         }
     })
     generateNewBlock()
@@ -187,6 +197,7 @@ function generateNewBlock() {
     movingBlock.left = 3 
     movingBlock.top = 0
     movingBlock.direction = 0
+    
     initialBlock = {...movingBlock}
     renderBlocks()
 }
@@ -198,6 +209,12 @@ function dropBlock(){
         moveBlock("top",1)
     }, 10)
 }
+
+// game over
+function gameOver() {
+    stopGame.style.display = "flex"
+}
+  
 
 //event handling for  key control 
 document.addEventListener('keydown', e => {
@@ -224,4 +241,14 @@ document.addEventListener('keydown', e => {
             break;
     }
     // console.log(e)
+})
+
+
+// startBtn.addEventListener('clicked', generateNewBlock())
+
+// if restart is clicked, game restarts
+restartBtn.addEventListener("click", ()=> {
+    gameBoard.innerHTML=""
+    stopGame.style.display = "none"
+    init()
 })
