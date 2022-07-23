@@ -130,6 +130,12 @@ ul {
     color: #fff;
     font-size: 50px;
   }
+
+  .gameover-text {
+      color: #fff;
+      text-align: center;
+      margin: 2em;
+  }
   
 .game-over > button {
     padding: 0.5rem 1rem;
